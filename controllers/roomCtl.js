@@ -27,10 +27,7 @@ const create = async (req, res, next) => {
     description: req.body.description,
     maxPeople: Number(req.body.maxPeople),
     roomNumbers: req.body.roomNumbers || [],
-    creator: req.user?.id,
   };
-
-  console.log(data);
 
   try {
     const room = await roomSrv.create(hotelId, data);

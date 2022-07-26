@@ -45,19 +45,19 @@ const hotelSchema = new mongoose.Schema({
   },
 
   rooms: {
-    type: [mongoose.Types.ObjectId],
+    type: [mongoose.Schema.Types.ObjectId],
     ref: "Room",
     default: [],
   },
 
   reservations: {
-    type: [mongoose.Types.ObjectId],
+    type: [mongoose.Schema.Types.ObjectId],
     ref: "Reservation",
     default: [],
   },
 
   reviews: {
-    type: [mongoose.Types.ObjectId],
+    type: [mongoose.Schema.Types.ObjectId],
     ref: "Review",
     default: [],
   },
@@ -74,7 +74,7 @@ const hotelSchema = new mongoose.Schema({
   },
 
   owner: {
-    type: mongoose.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },

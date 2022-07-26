@@ -54,10 +54,12 @@ const update = async (roomId, roomData) => {
 
 const del = async (roomId) => {
   try {
+  	//!TODO send messages to all users that have reservation in that room
+  
     const result = await Room.findByIdAndDelete(roomId);
 
     await Hotel.findOneAndUpdate(
-      { rooms: [roomId] },
+      { rooms: {$in: [roomId]} },
       { $pull: { rooms: roomId } }
     );
 

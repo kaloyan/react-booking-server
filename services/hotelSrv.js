@@ -18,7 +18,8 @@ const getAll = async (query, limit) => {
 
 const getOwn = async (userId) => {
   try {
-    const hotels = await Hotel.find({ owner: userId });
+    const hotels = await Hotel.find({ owner: userId }).populate("rooms");
+    
     return hotels;
   } catch (err) {
     throw err;
@@ -27,7 +28,7 @@ const getOwn = async (userId) => {
 
 const getOne = async (id) => {
   try {
-    const hotel = await Hotel.findById(id);
+    const hotel = await Hotel.findById(id).populate("rooms");
     return hotel;
   } catch (err) {
     throw err;
@@ -67,10 +68,6 @@ const del = async (id) => {
     for (const room of hotel.rooms) {
       await Room.findByIdAndDelete(room);
     }
-
-    // remove hotel from user's list of own hotels
-    //const owner = await User.findById(hotel.creator);
-    //await User.findByIdAndUpdate(owner._id, { $pull: { hotels: hotel._id } });
 
     //!TODO - find all reservations and remove them, then send message to users
 

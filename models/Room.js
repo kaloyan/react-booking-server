@@ -25,27 +25,10 @@ const roomSchema = new mongoose.Schema({
     required: [true, "MaxPeople is required"],
   },
 
-  roomNumbers: [
-    {
-      number: Number,
-      unavailDates: {
-        type: [Date],
-        default: [],
-      },
-    },
-  ],
-
-//  creator: {
-//    type: mongoose.Types.ObjectId,
-//    ref: "User",
-//    required: true,
-//  },
-
-//  editAccess: {
-//    type: [mongoose.Types.ObjectId],
-//    ref: "User",
-//    default: [],
-//  },
+  roomNumbers: {
+    type: [Number],
+    default: [],
+  },
 });
 
 module.exports = mongoose.model("Room", roomSchema);
