@@ -6,7 +6,7 @@ const cors = require("cors");
 const { dbConnect } = require("./config/database.js");
 const route = require("./routes.js");
 
-const port = process.env.SERVER_PORT || 3000;
+const port = process.env.PORT || 3000;
 
 const app = express();
 
