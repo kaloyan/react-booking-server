@@ -1,6 +1,5 @@
 const Hotel = require("../models/Hotel.js");
 const Room = require("../models/Room.js");
-const User = require("../models/User");
 
 const getAll = async (query, limit) => {
   const { min, max, ...params } = query;
@@ -19,7 +18,7 @@ const getAll = async (query, limit) => {
 const getOwn = async (userId) => {
   try {
     const hotels = await Hotel.find({ owner: userId }).populate("rooms");
-    
+
     return hotels;
   } catch (err) {
     throw err;
@@ -60,7 +59,6 @@ const update = async (id, data) => {
 };
 
 const del = async (id) => {
-
   try {
     // first find all hotels rooms and delete them
     const hotel = await Hotel.findById(id);

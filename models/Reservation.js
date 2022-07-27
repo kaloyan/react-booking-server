@@ -7,6 +7,17 @@ const reservationSchema = new mongoose.Schema({
     required: true,
   },
 
+  hotel: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Hotel",
+    required: true,
+  },
+
+  rooms: {
+    type: [Number],
+    required: true,
+  },
+
   arrive: {
     type: String,
     required: true,
