@@ -5,7 +5,7 @@ const { reservationSrv } = require("../services/reservationSrv.js");
 const create = async (req, res, next) => {
   const data = {
     ...req.body,
-    owner: req.user.id,
+    user: req.user.id,
   };
 
   try {

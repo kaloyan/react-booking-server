@@ -3,16 +3,16 @@ const User = require("../models/User.js");
 const Hotel = require("../models/Hotel.js");
 const { v4: uuid } = require("uuid");
 
-const create = async (data, hotelId, userId) => {
+const create = async (data) => {
+
   try {
     // first create new reservation
     const newReservation = new Reservation({
-      user: userId,
-      hotel: hotelId,
-      rooms: data.rooms,
+      user: data.user,
+      hotel: data.hotel,
+      rooms: data.rooms.map(Number),
       arrive: data.arrive,
       leave: data.leave,
-      guests: data.guests,
       comment: data.comment,
       price: data.price,
       date: Date.now(),
@@ -22,17 +22,17 @@ const create = async (data, hotelId, userId) => {
 
     // next put reservation id in hotel.reservations
 
-    await Hotel.findByIdAndUpdate(hotelId, {
+    await Hotel.findByIdAndUpdate(data.hotel, {
       $push: { reservations: newReservation._id },
     });
 
     // next send messages to owner and user
-    const hotel = Hotel.find({ _id: hotelId });
+    const hotel = await Hotel.find({ _id: data.hotel });
 
-    await User.findByIdAndUpdate(userId, {
+    await User.findByIdAndUpdate(data.user, {
       $push: {
         messages: {
-          msg: `Your reservation for: ${hotel.name} is created successfull.`,
+          msg: `Your reservation for: ${hotel[0].name} is created successfull.`,
           unread: true,
           id: uuid(),
           time: Date.now(),
@@ -40,12 +40,12 @@ const create = async (data, hotelId, userId) => {
       },
     });
 
-    const ownerId = hotel.owner;
+    const ownerId = hotel[0].owner;
 
     await User.findByIdAndUpdate(ownerId, {
       $push: {
         messages: {
-          msg: `Your have new reservation in hotel: ${hotel.name}`,
+          msg: `Your have new reservation in hotel: ${hotel[0].name}`,
           unread: true,
           id: uuid(),
           time: Date.now(),

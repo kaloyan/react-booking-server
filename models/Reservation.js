@@ -28,11 +28,6 @@ const reservationSchema = new mongoose.Schema({
     required: true,
   },
 
-  guests: {
-    type: Number,
-    required: true,
-  },
-
   comment: {
     type: String,
     default: "",
@@ -49,4 +44,4 @@ const reservationSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("reservation", reservationSchema);
+module.exports = mongoose.model("Reservation", reservationSchema);
