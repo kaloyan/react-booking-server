@@ -58,8 +58,9 @@ route.delete("/api/v1/destinations/del/:id", guard.isAdmin, destCtl.del, err);
 route.get("/api/v1/reservate/hotel/:hotelId", reservateCtl.getByHotel, err);
 route.get("/api/v1/reservate/user/:userId", reservateCtl.getByUser, err);
 route.get("/api/v1/reservate/owner/:ownerId", reservateCtl.getByOwner, err);
+route.get("/api/v1/reservate/:reservationId", reservateCtl.getOne, err);
 route.post("/api/v1/reservate/", reservateCtl.create, err);
-route.delete("/api/v1/reservate/:id", reservateCtl.remove, err);
+route.delete("/api/v1/reservate/:reservationId", reservateCtl.remove, err);
 
 // define 404 not found route
 route.get("*", (req, res) => {

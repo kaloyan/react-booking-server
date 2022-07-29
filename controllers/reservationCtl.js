@@ -49,15 +49,27 @@ const getByOwner = async (req, res, next) => {
   }
 };
 
-const remove = async (req, res, next) => {
-  const id = req.params.id;
+const getOne = async (req, res, next) => {
+  const reservationId = req.params.reservationId;
 
   try {
-    const reservations = await reservationSrv.remove(id);
+    const reservation = await reservationSrv.getOne(reservationId);
+    res.json(reservation);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const remove = async (req, res, next) => {
+  const reservationId = req.params.reservationId;
+
+  try {
+    const reservations = await reservationSrv.remove(reservationId);
     res.json(reservations);
   } catch (err) {
     next(err);
   }
 };
 
-exports.reservateCtl = { create, getByHotel, getByUser, getByOwner, remove };
+exports.reservateCtl = { create, getByHotel, getByUser, getByOwner, getOne, remove };
+

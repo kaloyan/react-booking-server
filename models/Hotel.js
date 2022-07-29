@@ -80,4 +80,4 @@ const hotelSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("hotel", hotelSchema);
+module.exports = mongoose.model("Hotel", hotelSchema);

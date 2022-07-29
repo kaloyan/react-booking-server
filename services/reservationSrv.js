@@ -4,7 +4,6 @@ const Hotel = require("../models/Hotel.js");
 const { v4: uuid } = require("uuid");
 
 const create = async (data) => {
-
   try {
     // first create new reservation
     const newReservation = new Reservation({
@@ -61,17 +60,17 @@ const create = async (data) => {
 
 const remove = async (reservationId) => {
   try {
-    const reservation = Reservation.find({ _id: reservationId }).populate();
+    const reservation = await Reservation.find({ _id: reservationId });
 
-    const userId = reservation.user._id;
-    const ownerId = reservation.hotel.owner;
-    const hotelId = reservation.hotel._id;
+    const item = reservation[0];
+    await item.populate("user");
+    await item.populate("hotel");
 
     // send messages to the user and owner
-    await User.findByIdAndUpdate(userId, {
+    await User.findByIdAndUpdate(item.user._id, {
       $push: {
         messages: {
-          msg: `Your reservation for: ${hotel.name} was canceld.`,
+          msg: `Your reservation for: ${item.hotel.name} was canceld.`,
           unread: true,
           id: uuid(),
           time: Date.now(),
@@ -79,10 +78,10 @@ const remove = async (reservationId) => {
       },
     });
 
-    await User.findByIdAndUpdate(ownerId, {
+    await User.findByIdAndUpdate(item.hotel.owner, {
       $push: {
         messages: {
-          msg: `Reservation in hotel: ${hotel.name} was canceld`,
+          msg: `Reservation in hotel: ${item.hotel.name} was canceld`,
           unread: true,
           id: uuid(),
           time: Date.now(),
@@ -91,7 +90,7 @@ const remove = async (reservationId) => {
     });
 
     // next remove reservation from hotel.reservations
-    await Hotel.findByIdAndUpdate(hotelId, {
+    await Hotel.findByIdAndUpdate(item.hotel._id, {
       $pull: { reservations: reservationId },
     });
 
@@ -122,6 +121,43 @@ const getByUser = async (userId) => {
   }
 };
 
+const getOne = async (reservationId) => {
+  try {
+    const reservations = await Reservation.find({ _id: reservationId });
+
+    const item = reservations[0];
+    await item.populate("user");
+    await item.populate("hotel");
+
+    const answer = {
+      _id: item._id,
+      date: item.date,
+      arrive: item.arrive,
+      leave: item.leave,
+      rooms: item.rooms,
+      price: item.price,
+      comment: item.comment,
+      hotel: {
+        name: item.hotel.name,
+        image: item.hotel.pictures[0],
+        type: item.hotel.type,
+        _id: item.hotel._id,
+      },
+      guest: {
+        name: item.user.username,
+        email: item.user.email,
+        phone: item.user.phone,
+        image: item.user.avatar,
+        _id: item.user._id,
+      },
+    };
+
+    return answer;
+  } catch (err) {
+    throw err;
+  }
+};
+
 const getByOwner = async (ownerId) => {
   const reservations = [];
 
@@ -132,14 +168,31 @@ const getByOwner = async (ownerId) => {
 
     for (const hotel of hotelsList) {
       for (const item of hotel.reservations) {
-        reservations.push(item);
+        const answer = {
+          hotel: hotel.name,
+          arrive: item.arrive,
+          leave: item.leave,
+          rooms: item.rooms,
+          date: item.date,
+          price: item.price,
+          _id: item._id,
+          comment: item.comment,
+        };
+
+        reservations.push(answer);
       }
     }
-
     return reservations;
   } catch (err) {
     throw err;
   }
 };
 
-exports.reservationSrv = { create, remove, getByHotel, getByUser, getByOwner };
+exports.reservationSrv = {
+  create,
+  remove,
+  getByHotel,
+  getByUser,
+  getByOwner,
+  getOne,
+};

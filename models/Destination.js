@@ -23,4 +23,4 @@ const destinationSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("destination", destinationSchema);
+module.exports = mongoose.model("Destination", destinationSchema);
