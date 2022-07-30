@@ -80,4 +80,29 @@ const delUser = async (req, res, next) => {
   }
 };
 
-exports.userCtl = { getUser, getUserCounts, getAll, updateUser, delUser };
+const delMsg = async (req, res, next) => {
+	const userId = req.user.id;
+	const msgId = req.params.id;
+	
+	try {
+		const response = await userSrv.delMsg(userId, msgId);
+		res.json(response);
+	} catch (err) {
+		next(err);
+	}
+}
+
+const readMsg = async (req, res, next) => {
+	const userId = req.user.id;
+	const msgId = req.params.id;
+	
+	try {
+		const response = await userSrv.readMsg(userId, msgId);
+		res.json(response);
+	} catch (err) {
+		next(err);
+	}
+}
+
+exports.userCtl = { getUser, getUserCounts, getAll, updateUser, delUser, delMsg, readMsg };
+

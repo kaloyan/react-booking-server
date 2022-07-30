@@ -44,14 +44,16 @@ route.delete("/api/v1/rooms/:id", roomCtl.del, err);
 route.get("/api/v1/users", guard.isAdmin, userCtl.getAll, err);
 route.get("/api/v1/users/:id", userCtl.getUser, err);
 route.get("/api/v1/users/:id/counts", userCtl.getUserCounts, err);
+route.get("/api/v1/users/msg/:id", userCtl.readMsg, err);
 route.put("/api/v1/users/:id", userCtl.updateUser, err);
 route.delete("/api/v1/users/:id", userCtl.delUser, err);
+route.delete("/api/v1/users/msg/:id", userCtl.delMsg, err);
 
 // destinations API routes
 route.post("/api/v1/destinations", guard.isAdmin, destCtl.create, err);
 route.get("/api/v1/destinations", destCtl.getAll, err);
 route.get("/api/v1/destinations/:id", destCtl.getOne, err);
-route.put("/api/v1/destinations/edit/:id", guard.isAdmin, destCtl.edit, err);
+route.put("/api/v1/destinations/edit/:id",  destCtl.edit, err);
 route.delete("/api/v1/destinations/del/:id", guard.isAdmin, destCtl.del, err);
 
 // reservations API routes

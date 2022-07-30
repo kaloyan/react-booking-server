@@ -74,4 +74,31 @@ const delUser = async (id) => {
   }
 };
 
-exports.userSrv = { getAll, getUser, getUserCounts, updateUser, delUser };
+const delMsg = async (userId, msgId) => {
+  try {
+    const user = await User.findById(userId);
+
+    await User.findByIdAndUpdate(userId, {
+      $set: { messages: user.messages.filter((x) => x.id !== msgId) },
+    });
+
+    const response = await User.findById(userId);
+    return response;
+  } catch (err) {
+    throw err;
+  }
+};
+
+const readMsg = async (userId, msgId) => {
+  //todo
+};
+
+exports.userSrv = {
+  getAll,
+  getUser,
+  getUserCounts,
+  updateUser,
+  delUser,
+  delMsg,
+  readMsg,
+};

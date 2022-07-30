@@ -19,9 +19,19 @@ const getAll = () => {
   }
 };
 
-const getOne = (id) => {
+const getOne = async (id) => {
   try {
-    const response = Destination.find({ _id: id });
+    const response = await Destination.find({ _id: id });
+    return response[0];
+    //
+  } catch (err) {
+    throw err;
+  }
+};
+
+const getFeatured = async () => {
+  try {
+    const response = await Destination.find({ featured: true });
     return response;
     //
   } catch (err) {
@@ -29,20 +39,12 @@ const getOne = (id) => {
   }
 };
 
-const getFeatured = () => {
+const edit = async (id, body) => {
   try {
-    const response = Destination.find({ featured: true });
-    return response;
-    //
-  } catch (err) {
-    throw err;
-  }
-};
+    await Destination.findByIdAndUpdate(id, { $set:  body  });
+    const response = await Destination.find({_id: id});
 
-const edit = (id, body) => {
-  try {
-    const response = Destination.findByIdAndUpdate(id, { $set: { body } });
-    return response;
+    return response[0];
   } catch (err) {
     throw err;
   }
