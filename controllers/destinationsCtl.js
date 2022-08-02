@@ -29,6 +29,15 @@ const getAll = async (req, res, nest) => {
   }
 };
 
+const getFeatured = async (req, res, nest) => {
+  try {
+    const response = await destinationSrv.getFeatured();
+    res.json(response);
+  } catch (err) {
+    next(err);
+  }
+};
+
 const getOne = async (req, res, next) => {
   try {
     const response = await destinationSrv.getOne(req.params.id);
@@ -61,4 +70,4 @@ const del = async (req, res, next) => {
   }
 };
 
-exports.destCtl = { create, getAll, getOne, edit, del };
+exports.destCtl = { create, getAll, getOne, getFeatured, edit, del };

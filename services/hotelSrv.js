@@ -15,6 +15,20 @@ const getAll = async (query, limit) => {
   }
 };
 
+const featured = async () => {
+  try {
+	const response = await Hotel.aggregate([
+	   { $sample: { size: 6} },
+	]);
+	
+    //const response = await Hotel.find({ featured: true }).limit(6);
+console.log(response)
+    return response;
+  } catch (err) {
+    throw err;
+  }
+};
+
 const query = async (params) => {
   if (!params) throw { error: "Server error" };
 
@@ -136,4 +150,5 @@ exports.hotelSrv = {
   del,
   getCount,
   query,
+  featured,
 };

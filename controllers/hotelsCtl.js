@@ -18,6 +18,11 @@ const getAll = async (req, res, next) => {
   res.json(hotels);
 };
 
+const featured = async (req, res, next) => {
+  const hotels = await hotelSrv.featured();
+  res.json(hotels);
+};
+
 const query = async (req, res, next) => {
   try {
   	const result = await hotelSrv.query(req.query);
@@ -111,4 +116,5 @@ exports.hotelsCtl = {
   countByCity,
   countByType,
   query,
+  featured,
 };

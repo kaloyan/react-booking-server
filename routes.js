@@ -29,6 +29,7 @@ route.get("/api/v1/hotels/query*", hotelsCtl.query, err);
 route.get("/api/v1/hotels/own", hotelsCtl.getOwn, err);
 route.get("/api/v1/hotels/countByCity", hotelsCtl.countByCity, err);
 route.get("/api/v1/hotels/countByType", hotelsCtl.countByType, err);
+route.get("/api/v1/hotels/featured", hotelsCtl.featured, err);
 route.get("/api/v1/hotels/:id", hotelsCtl.getOne, err);
 route.post("/api/v1/hotels", hotelsCtl.create, err);
 route.put("/api/v1/hotels/:id", hotelsCtl.update, err);
@@ -53,6 +54,7 @@ route.delete("/api/v1/users/msg/:id", userCtl.delMsg, err);
 // destinations API routes
 route.post("/api/v1/destinations", guard.isAdmin, destCtl.create, err);
 route.get("/api/v1/destinations", destCtl.getAll, err);
+route.get("/api/v1/destinations/featured", destCtl.getFeatured, err);
 route.get("/api/v1/destinations/:id", destCtl.getOne, err);
 route.put("/api/v1/destinations/edit/:id", guard.isAdmin, destCtl.edit, err);
 route.delete("/api/v1/destinations/del/:id", guard.isAdmin, destCtl.del, err);

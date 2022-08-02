@@ -31,9 +31,13 @@ const getOne = async (id) => {
 
 const getFeatured = async () => {
   try {
-    const response = await Destination.find({ featured: true });
+	const response = await Destination.aggregate([
+	   { $sample: { size: 3} },
+	]);
+	
+    //const response = await Destination.find({ featured: true }).limit(6);
+
     return response;
-    //
   } catch (err) {
     throw err;
   }
