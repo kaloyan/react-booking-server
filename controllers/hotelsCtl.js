@@ -18,6 +18,15 @@ const getAll = async (req, res, next) => {
   res.json(hotels);
 };
 
+const query = async (req, res, next) => {
+  try {
+  	const result = await hotelSrv.query(req.query);
+  	res.json(result);
+  } catch (err) {
+  	next(err);
+  }
+}
+
 const getOwn = async (req, res, next) => {
   const hotels = await hotelSrv.getOwn(req.user.id);
   res.json(hotels);
@@ -101,4 +110,5 @@ exports.hotelsCtl = {
   del,
   countByCity,
   countByType,
+  query,
 };

@@ -15,6 +15,48 @@ const getAll = async (query, limit) => {
   }
 };
 
+const query = async (params) => {
+  if (!params) throw { error: "Server error" };
+
+  try {
+    let query;
+
+    if (params.dest) {
+      const patt = new RegExp(`${params.dest}`, "i");
+
+      query = Hotel.find({
+        $or: [
+          { name: patt },
+          { city: patt },
+          { country: patt },
+          { address: patt },
+        ],
+      });
+    } else {
+      query = Hotel.find({});
+    }
+
+    if (params.type) query.where("type", params.type);
+    if (params.price) query.where("cheepestPrice").lte(params.price);
+    if (params.rating) query.where("rating").gte(Number(params.rating));
+
+    const limit = params.limit || 8;
+    const offset = params.offset || 0;
+
+    const qc = query.toConstructor();
+
+    const output = {
+      items: await qc().limit(limit).skip(offset),
+      total: await qc().count(),
+      slice: { start: offset, count: limit },
+    };
+
+    return output;
+  } catch (err) {
+    throw err;
+  }
+};
+
 const getOwn = async (userId) => {
   try {
     const hotels = await Hotel.find({ owner: userId }).populate("rooms");
@@ -85,4 +127,13 @@ const getCount = (obj) => {
   }
 };
 
-exports.hotelSrv = { getAll, getOne, getOwn, create, update, del, getCount };
+exports.hotelSrv = {
+  getAll,
+  getOne,
+  getOwn,
+  create,
+  update,
+  del,
+  getCount,
+  query,
+};
