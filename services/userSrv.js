@@ -37,7 +37,7 @@ const getAll = async () => {
 
 const updateUser = async (id, data) => {
   if (data.password) {
-    const hashPass = await bcrypt.hash(password, 10);
+    const hashPass = await bcrypt.hash(data.password, 10);
     data.password = hashPass;
   }
 
@@ -66,9 +66,12 @@ const updateUser = async (id, data) => {
 };
 
 const delUser = async (id) => {
+	//!TODO - remove all users hotels and reservations and rooms
+
   try {
-    const result = await User.findByIdAndDelete(id);
-    return result;
+    await User.findByIdAndDelete(id);
+    const users = await User.find({}).lean();
+    return users;
   } catch (err) {
     throw err;
   }

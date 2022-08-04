@@ -22,6 +22,28 @@ const getUser = async (req, res, next) => {
   }
 };
 
+const getAccount = async (userId) => {
+  try {
+    const response = await userSrv.getUser(userId);
+
+    return {
+      id: response._id,
+      username: response.username,
+      email: response.email,
+      phone: response.phone,
+      address: response.address,
+      role: response.role,
+      avatar: response.avatar,
+      messages: response.messages,
+      gender: response.gender,
+      birthday: response.birthday,
+      status: "OK",
+    };
+  } catch (err) {
+    return false;
+  }
+};
+
 const getUserCounts = async (req, res, next) => {
   const response = await userSrv.getUserCounts(req.params.id);
   res.json(response);
@@ -35,7 +57,9 @@ const getAll = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
   const userId = req.params.id;
   const data = req.body;
-
+  
+  if(!userId || !data) throw {message: "Server error"};
+  
   try {
     // if not Admin and not account owner = throw error
     if (!req.admin && req.user?.id != userId) {
@@ -47,12 +71,10 @@ const updateUser = async (req, res, next) => {
 
     //!TODO prevent role escalation
 
-    const user = await userSrv.updateUser(userId, data);
+    await userSrv.updateUser(userId, data);
+    const user = await getAccount(userId)
 
-    res.json({
-      status: "OK",
-      message: `User ${user.username} updated successfull`,
-    });
+    res.json(user);
   } catch (err) {
     next(err);
   }
@@ -71,10 +93,7 @@ const delUser = async (req, res, next) => {
     }
 
     const result = await userSrv.delUser(userId);
-    res.json({
-      status: "OK",
-      message: `User ${result.username} deleted successfull`,
-    });
+    res.json(result);
   } catch (err) {
     next(err);
   }
@@ -85,8 +104,10 @@ const delMsg = async (req, res, next) => {
 	const msgId = req.params.id;
 	
 	try {
-		const response = await userSrv.delMsg(userId, msgId);
-		res.json(response);
+		await userSrv.delMsg(userId, msgId);
+		
+		const user = await getAccount(userId)
+		res.json(user);
 	} catch (err) {
 		next(err);
 	}

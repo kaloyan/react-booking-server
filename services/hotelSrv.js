@@ -22,7 +22,7 @@ const featured = async () => {
 	]);
 	
     //const response = await Hotel.find({ featured: true }).limit(6);
-console.log(response)
+
     return response;
   } catch (err) {
     throw err;

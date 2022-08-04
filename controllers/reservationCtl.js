@@ -3,6 +3,8 @@
 const { reservationSrv } = require("../services/reservationSrv.js");
 
 const create = async (req, res, next) => {
+	if (!req.user?.id) return next({error: "Access denied"})
+
   const data = {
     ...req.body,
     user: req.user.id,
