@@ -1,6 +1,8 @@
 const User = require("../models/User.js");
 const Hotel = require("../models/Hotel.js");
 const Reservation = require("../models/Reservation");
+const Rooms = require("../models/Room");
+
 const bcrypt = require("bcrypt");
 const { v4: uuid } = require("uuid");
 
@@ -66,9 +68,31 @@ const updateUser = async (id, data) => {
 };
 
 const delUser = async (id) => {
-	//!TODO - remove all users hotels and reservations and rooms
+  if (!id) throw { error: "user id is required" };
 
   try {
+    // remove all users reservations
+    const reservations = await Reservation.find({ user: id });
+
+    for (const item of reservations) {
+      await Hotel.findByIdAndUpdate(item.hotel, {
+        $pull: { reservations: item._id },
+      });
+
+      Reservation.findByIdAndDelete(item._id);
+    }
+
+    // remove all users hotels and rooms
+    const hotels = await Hotel.find({ owner: id });
+
+    for (const item of hotels) {
+      for (const room of item.rooms) {
+        await Rooms.findByIdAndDelete(room._id);
+      }
+
+      await Hotel.findByIdAndDelete(item._id);
+    }
+
     await User.findByIdAndDelete(id);
     const users = await User.find({}).lean();
     return users;

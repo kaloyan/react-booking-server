@@ -113,46 +113,36 @@ const getByHotel = async (hotelId) => {
 };
 
 const getByUser = async (userId) => {
+  const reservations = [];
+
   try {
-    const reservations = await Reservation.find({ user: userId });
+    const results = await Reservation.find({ user: userId }).populate("hotel");
+
+    for (const item of results) {
+      const owner = await User.findById(item.hotel.owner);
+
+      const answer = {
+        hotel: item.hotel.name,
+        arrive: item.arrive,
+        leave: item.leave,
+        rooms: item.rooms,
+        date: item.date,
+        price: item.price,
+        _id: item._id,
+        comment: item.comment,
+        owner: {
+          name: owner.username,
+          email: owner.email,
+          phone: owner.phone,
+          avatar: owner.avatar,
+          _id: owner._id,
+        },
+      };
+
+      reservations.push(answer);
+    }
+
     return reservations;
-  } catch (err) {
-    throw err;
-  }
-};
-
-const getOne = async (reservationId) => {
-  try {
-    const reservations = await Reservation.find({ _id: reservationId });
-
-    const item = reservations[0];
-    await item.populate("user");
-    await item.populate("hotel");
-
-    const answer = {
-      _id: item._id,
-      date: item.date,
-      arrive: item.arrive,
-      leave: item.leave,
-      rooms: item.rooms,
-      price: item.price,
-      comment: item.comment,
-      hotel: {
-        name: item.hotel.name,
-        image: item.hotel.pictures[0],
-        type: item.hotel.type,
-        _id: item.hotel._id,
-      },
-      guest: {
-        name: item.user.username,
-        email: item.user.email,
-        phone: item.user.phone,
-        image: item.user.avatar,
-        _id: item.user._id,
-      },
-    };
-
-    return answer;
   } catch (err) {
     throw err;
   }
@@ -183,6 +173,51 @@ const getByOwner = async (ownerId) => {
       }
     }
     return reservations;
+  } catch (err) {
+    throw err;
+  }
+};
+
+const getOne = async (reservationId) => {
+  try {
+    const item = await Reservation.findById(reservationId);
+
+    await item.populate("user");
+    await item.populate("hotel");
+
+    const owner = await User.findById(item.hotel.owner);
+
+    const answer = {
+      _id: item._id,
+      date: item.date,
+      arrive: item.arrive,
+      leave: item.leave,
+      rooms: item.rooms,
+      price: item.price,
+      comment: item.comment,
+      hotel: {
+        name: item.hotel.name,
+        image: item.hotel.pictures[0],
+        type: item.hotel.type,
+        _id: item.hotel._id,
+      },
+      guest: {
+        name: item.user.username,
+        email: item.user.email,
+        phone: item.user.phone,
+        image: item.user.avatar,
+        _id: item.user._id,
+      },
+      owner: {
+        name: owner.username,
+        email: owner.email,
+        phone: owner.phone,
+        avatar: owner.avatar,
+        _id: owner._id,
+      },
+    };
+
+    return answer;
   } catch (err) {
     throw err;
   }

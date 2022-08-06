@@ -1,5 +1,8 @@
 const Hotel = require("../models/Hotel.js");
+const Reservation = require("../models/Reservation.js");
 const Room = require("../models/Room.js");
+const User = require("../models/User");
+const { v4: uuid } = require("uuid");
 
 const getAll = async (query, limit) => {
   const { min, max, ...params } = query;
@@ -17,10 +20,8 @@ const getAll = async (query, limit) => {
 
 const featured = async () => {
   try {
-	const response = await Hotel.aggregate([
-	   { $sample: { size: 6} },
-	]);
-	
+    const response = await Hotel.aggregate([{ $sample: { size: 6 } }]);
+
     //const response = await Hotel.find({ featured: true }).limit(6);
 
     return response;
@@ -123,7 +124,23 @@ const del = async (id) => {
       await Room.findByIdAndDelete(room);
     }
 
-    //!TODO - find all reservations and remove them, then send message to users
+    // remove al reservations and send messages to the users
+    for (const item of hotel.reservations) {
+      const reservation = await Reservation.findById(item);
+
+      await User.findByIdAndUpdate(reservation.user, {
+        $push: {
+          messages: {
+            msg: `Your reservation in hotel: ${hotel.name} was canceld`,
+            unread: true,
+            id: uuid(),
+            time: Date.now(),
+          },
+        },
+      });
+
+      await Reservation.findByIdAndDelete(item._id);
+    }
 
     // next detele the hotel
     const result = await Hotel.findByIdAndDelete(id);

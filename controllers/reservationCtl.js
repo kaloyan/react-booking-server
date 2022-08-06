@@ -31,6 +31,8 @@ const getByHotel = async (req, res, next) => {
 
 const getByUser = async (req, res, next) => {
   const userId = req.params.userId;
+  
+  if (!userId) throw {error: "User id is required"};
 
   try {
     const reservations = await reservationSrv.getByUser(userId);
@@ -42,6 +44,8 @@ const getByUser = async (req, res, next) => {
 
 const getByOwner = async (req, res, next) => {
   const ownerId = req.params.ownerId;
+  
+  if (!ownerId) throw {error: "Owner id is required"};
 
   try {
     const reservations = await reservationSrv.getByOwner(ownerId);
