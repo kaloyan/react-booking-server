@@ -6,6 +6,11 @@ const reviewSchema = new mongoose.Schema({
     ref: "User",
   },
 
+  hotel: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Hotel",
+  },
+
   comment: {
     type: String,
     required: true,
@@ -18,8 +23,8 @@ const reviewSchema = new mongoose.Schema({
   },
 
   date: {
-    type: String,
-    default: new Date().toDateString(),
+    type: Number,
+    default: Date.now(),
   },
 });
 

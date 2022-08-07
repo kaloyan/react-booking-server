@@ -12,6 +12,7 @@ const create = (data) => {
 const getAll = () => {
   try {
     const response = Destination.find({});
+
     return response;
     //
   } catch (err) {
@@ -31,10 +32,8 @@ const getOne = async (id) => {
 
 const getFeatured = async () => {
   try {
-	const response = await Destination.aggregate([
-	   { $sample: { size: 3} },
-	]);
-	
+    const response = await Destination.aggregate([{ $sample: { size: 3 } }]);
+
     //const response = await Destination.find({ featured: true }).limit(6);
 
     return response;
@@ -45,8 +44,8 @@ const getFeatured = async () => {
 
 const edit = async (id, body) => {
   try {
-    await Destination.findByIdAndUpdate(id, { $set:  body  });
-    const response = await Destination.find({_id: id});
+    await Destination.findByIdAndUpdate(id, { $set: body });
+    const response = await Destination.find({ _id: id });
 
     return response[0];
   } catch (err) {

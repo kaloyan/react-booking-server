@@ -7,6 +7,7 @@ const { userCtl } = require("./controllers/userCtl.js");
 const { roomCtl } = require("./controllers/roomCtl.js");
 const { destCtl } = require("./controllers/destinationsCtl");
 const { reservateCtl } = require("./controllers/reservationCtl");
+const { reviewCtl } = require("./controllers/reviewCtl");
 
 // import middlewares
 const { err } = require("./middlewares/errorHandlerMW.js");
@@ -67,10 +68,17 @@ route.get("/api/v1/reservate/:reservationId", reservateCtl.getOne, err);
 route.post("/api/v1/reservate/", reservateCtl.create, err);
 route.delete("/api/v1/reservate/:reservationId", reservateCtl.remove, err);
 
+// review API routes
+route.get("/api/v1/review/hotel/:id", reviewCtl.getByHotel, err);
+route.get("/api/v1/review/user/:id", reviewCtl.getByUser, err);
+route.get("/api/v1/review/canpost/hotel/:id", reviewCtl.canPost, err);
+route.post("/api/v1/review/hotel/:id", reviewCtl.create, err);
+route.put("/api/v1/review/:id", reviewCtl.update, err);
+route.delete("/api/v1/review/:id", reviewCtl.remove, err);
+
 // define 404 not found route
 route.get("*", (req, res) => {
   res.status(404).json({ status: 404, message: "Not found" });
 });
 
 module.exports = route;
-
