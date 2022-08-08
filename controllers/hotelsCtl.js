@@ -23,14 +23,26 @@ const featured = async (req, res, next) => {
   res.json(hotels);
 };
 
+const favorites = async (req, res, next) => {
+  const list = req.body;
+
+  if (!list) {
+    return res.send(false);
+  }
+
+  const hotels = await hotelSrv.favorites(list);
+
+  res.json(hotels);
+};
+
 const query = async (req, res, next) => {
   try {
-  	const result = await hotelSrv.query(req.query);
-  	res.json(result);
+    const result = await hotelSrv.query(req.query);
+    res.json(result);
   } catch (err) {
-  	next(err);
+    next(err);
   }
-}
+};
 
 const getOwn = async (req, res, next) => {
   const hotels = await hotelSrv.getOwn(req.user.id);
@@ -117,4 +129,5 @@ exports.hotelsCtl = {
   countByType,
   query,
   featured,
+  favorites,
 };

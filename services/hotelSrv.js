@@ -158,6 +158,18 @@ const getCount = (obj) => {
   }
 };
 
+const favorites = (items) => {
+  try {
+    const results = Hotel.find({
+      _id: { $in: items },
+    });
+
+    return results;
+  } catch (err) {
+    throw err;
+  }
+};
+
 exports.hotelSrv = {
   getAll,
   getOne,
@@ -168,4 +180,5 @@ exports.hotelSrv = {
   getCount,
   query,
   featured,
+  favorites,
 };
