@@ -67,6 +67,20 @@ const updateUser = async (id, data) => {
   }
 };
 
+const updateMsg = async (id, data) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      id,
+      { $set: data },
+      { new: true }
+    );
+
+    return user;
+  } catch (err) {
+    throw err;
+  }
+};
+
 const delUser = async (id) => {
   if (!id) throw { error: "user id is required" };
 
@@ -116,10 +130,6 @@ const delMsg = async (userId, msgId) => {
   }
 };
 
-const readMsg = async (userId, msgId) => {
-  //todo
-};
-
 exports.userSrv = {
   getAll,
   getUser,
@@ -127,5 +137,5 @@ exports.userSrv = {
   updateUser,
   delUser,
   delMsg,
-  readMsg,
+  updateMsg,
 };

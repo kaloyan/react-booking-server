@@ -48,8 +48,8 @@ route.delete("/api/v1/rooms/:id", roomCtl.del, err);
 route.get("/api/v1/users", guard.isAdmin, userCtl.getAll, err);
 route.get("/api/v1/users/:id", userCtl.getUser, err);
 route.get("/api/v1/users/:id/counts", userCtl.getUserCounts, err);
-route.get("/api/v1/users/msg/:id", userCtl.readMsg, err);
 route.put("/api/v1/users/:id", userCtl.updateUser, err);
+route.put("/api/v1/users/msg/:id", userCtl.updateMsg, err);
 route.delete("/api/v1/users/:id", userCtl.delUser, err);
 route.delete("/api/v1/users/msg/:id", userCtl.delMsg, err);
 

@@ -57,9 +57,9 @@ const getAll = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
   const userId = req.params.id;
   const data = req.body;
-  
-  if(!userId || !data) throw {message: "Server error"};
-  
+
+  if (!userId || !data) throw { message: "Server error" };
+
   try {
     // if not Admin and not account owner = throw error
     if (!req.admin && req.user?.id != userId) {
@@ -69,10 +69,32 @@ const updateUser = async (req, res, next) => {
       };
     }
 
-    //!TODO prevent role escalation
-
     await userSrv.updateUser(userId, data);
-    const user = await getAccount(userId)
+    const user = await getAccount(userId);
+
+    res.json(user);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const updateMsg = async (req, res, next) => {
+  const userId = req.params.id;
+  const data = req.body;
+
+  if (!userId || !data) throw { message: "Server error" };
+
+  try {
+    // if not Admin and not account owner = throw error
+    if (!req.admin && req.user?.id != userId) {
+      throw {
+        status: 403,
+        message: "Access denied",
+      };
+    }
+
+    await userSrv.updateMsg(userId, data);
+    const user = await getAccount(userId);
 
     res.json(user);
   } catch (err) {
@@ -100,30 +122,25 @@ const delUser = async (req, res, next) => {
 };
 
 const delMsg = async (req, res, next) => {
-	const userId = req.user.id;
-	const msgId = req.params.id;
-	
-	try {
-		await userSrv.delMsg(userId, msgId);
-		
-		const user = await getAccount(userId)
-		res.json(user);
-	} catch (err) {
-		next(err);
-	}
-}
+  const userId = req.user.id;
+  const msgId = req.params.id;
 
-const readMsg = async (req, res, next) => {
-	const userId = req.user.id;
-	const msgId = req.params.id;
-	
-	try {
-		const response = await userSrv.readMsg(userId, msgId);
-		res.json(response);
-	} catch (err) {
-		next(err);
-	}
-}
+  try {
+    await userSrv.delMsg(userId, msgId);
 
-exports.userCtl = { getUser, getUserCounts, getAll, updateUser, delUser, delMsg, readMsg };
+    const user = await getAccount(userId);
+    res.json(user);
+  } catch (err) {
+    next(err);
+  }
+};
 
+exports.userCtl = {
+  getUser,
+  getUserCounts,
+  getAll,
+  updateUser,
+  delUser,
+  delMsg,
+  updateMsg,
+};
